@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+  </head>
+  <input onclick="getLbs()" type="button"></input>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    
+    <script>
+      function getLbs() {
+        new Promise((resolve, reject) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                if (!position || !position.coords ||
+                    !position.coords.latitude ||
+                    !position.coords.longitude) {
+                  reject('请先开启您手机上的GPS定位功能哦!您的位置信息仅用于对您进行贷款审核');
+                } else {
+                  const { latitude, longitude } = position.coords;
+                  resolve({ latitude, longitude, coordinateSystem: 'WGS-84' });
+                }
+              },
+              // error
+              (error) => {
+                console.log('navigator.geolocation.getCurrentPosition方式获取LBS失败');
+                switch (error.code) {
+                  case error.PERMISSION_DENIED:
+                    reject('请先打开GPS位置服务。您的位置信息仅用于对您进行贷款审核');
+                    break;
+                  case error.TIMEOUT:
+                    reject('获取地理位置超时。您的位置信息仅用于对您进行贷款审核');
+                    break;
+                  case error.POSITION_UNAVAILABLE:
+                  case error.UNKNOWN_ERROR:
+                  default:
+                    reject('获取地理位置失败。您的位置信息仅用于对您进行贷款审核');
+                    break;
+                }
+              });
+          } else {
+            reject('请先开启您手机上的GPS定位功能哦。您的位置信息仅用于对您进行贷款审核');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
