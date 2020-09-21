@@ -13,17 +13,20 @@
   </head>
   <input onclick="getH5Lbs()" type="button" value="H5方式获取lbs"/>
   <input onclick="getAliLbs()" type="button" value="bridge方式获取lbs"/>
+  <input onclick="getAliH5Lbs()" type="button" value="bridge&&H5"/>
   <body>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     
     <script>
+      var timer;
       function getH5Lbs() {
         new Promise((resolve, reject) => {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
               (position) => {
+                clearTimeout(timer);
                 if (!position || !position.coords ||
                     !position.coords.latitude ||
                     !position.coords.longitude) {
@@ -36,7 +39,7 @@
               },
               // error
               (error) => {
-                console.log('navigator.geolocation.getCurrentPosition方式获取LBS失败');
+                clearTimeout(timer);
                 switch (error.code) {
                   case error.PERMISSION_DENIED:
                     reject('请先打开GPS位置服务。您的位置信息仅用于对您进行贷款审核');
@@ -60,6 +63,14 @@
         window.AlipayJSBridge.call.apply(null, ["getLocation", function(result) {
           alert(JSON.stringify(result));
         }]);
+      }
+      function getAliH5Lbs() {
+        getAliLbs();
+        timer = setTimeout(
+          function() {
+            getH5Lbs();
+          }, 2000
+        );
       }
     </script>
   </body>
