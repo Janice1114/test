@@ -29,7 +29,7 @@
                     !position.coords.longitude) {
                   reject('请先开启您手机上的GPS定位功能哦!您的位置信息仅用于对您进行贷款审核');
                 } else {
-                  alert(position.coords);
+                  alert(JSON.stringify(position.coords));
                   const { latitude, longitude } = position.coords;
                   resolve({ latitude, longitude, coordinateSystem: 'WGS-84' });
                 }
@@ -58,7 +58,7 @@
       }
       function getAliLbs() {
         window.AlipayJSBridge.call.apply(null, ["getLocation", function(result) {
-          alert(result);
+          alert(JSON.stringify(result));
         }]);
       }
     </script>
