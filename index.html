@@ -11,14 +11,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
   </head>
-  <input onclick="getLbs()" type="button" value="获取lbs"/>
+  <input onclick="getH5Lbs()" type="button" value="H5方式获取lbs"/>
+  <input onclick="getAliLbs()" type="button" value="bridge方式获取lbs"/>
   <body>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     
     <script>
-      function getLbs() {
+      function getH5Lbs() {
         new Promise((resolve, reject) => {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -28,6 +29,7 @@
                     !position.coords.longitude) {
                   reject('请先开启您手机上的GPS定位功能哦!您的位置信息仅用于对您进行贷款审核');
                 } else {
+                  alert(position.coords);
                   const { latitude, longitude } = position.coords;
                   resolve({ latitude, longitude, coordinateSystem: 'WGS-84' });
                 }
@@ -53,6 +55,11 @@
             reject('请先开启您手机上的GPS定位功能哦。您的位置信息仅用于对您进行贷款审核');
           }
         });
+      }
+      function getAliLbs() {
+        window.AlipayJSBridge.call.apply(null, ["getLocation", function(result) {
+          alert(result);
+        }]);
       }
     </script>
   </body>
